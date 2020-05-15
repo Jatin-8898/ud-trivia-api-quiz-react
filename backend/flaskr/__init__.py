@@ -220,10 +220,6 @@ def create_app(test_config=None):
 			# If no json body given, raise error.
 			abort(400, {'message': 'Please provide a JSON body with previous Question Ids and optional category. Thanks'})
 		try:
-			
-			if not ('quiz_category' in body and 'previous_questions' in body):
-				abort(422)
-
 			# Get paramters from JSON Body.
 			previous_questions = body.get('previous_questions', None)
 			category = body.get('quiz_category', None)

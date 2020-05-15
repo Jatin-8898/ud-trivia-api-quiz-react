@@ -75,8 +75,7 @@ GET `'/categories'`
 - *Request parameters:* None
 - Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
 - Example response:  
-
-
+- 
 ```
 {
   "categories": {
@@ -91,7 +90,7 @@ GET `'/categories'`
 }
 ```
 
-GET `\questions?page=<page_number>` 
+GET `/questions?page=<page_number>` 
 
 - Fetches a paginated dictionary of questions of all available categories
 - *Request parameters (optional):* page:int 
@@ -140,7 +139,15 @@ DELETE `/questions/<question_id>`
   "success": true
 }
 ```
-
+- If you try to delete a question which does not exist, it will throw an 400 error:
+- *Example response:* 
+```
+{
+  "error": 400,
+  "message": "bad request",
+  "success": false
+}
+```
 POST `/questions`
 - Add a new question to the repository of available questions
 - *Request body:* {question:string, answer:string, difficulty:int, category:string}
@@ -153,9 +160,19 @@ POST `/questions`
   "success": true
 }
 ```
+- If an argument is missing, then will throw `400` Bad request
+- *Example response:* 
+```
+{
+  "error": 400,
+  "message": "bad request",
+  "success": false
+}
+```
+
 POST `/questions/search`
-Fetches all questions where a substring matches the search term (not case-sensitive)
-- *Request body:* {searchTerm:string}
+- Fetches all questions where a substring matches the search term (not case-sensitive)
+- *Request body:* {searchTerm:'por'}
 - *Example response:*
 ```
 {
@@ -208,12 +225,12 @@ POST `/quizzes`
 ```
 {
   "question": {
-    "answer": "The Liver", 
-    "category": 1, 
-    "difficulty": 4, 
-    "id": 20, 
-    "question": "What is the heaviest organ in the human body?"
-  }, 
+    "answer": "Alexander Fleming",
+    "category": 1,
+    "difficulty": 3,
+    "id": 21,
+    "question": "Who discovered penicillin?"
+  },
   "success": true
 }
 ```
