@@ -93,7 +93,7 @@ def create_app(test_config=None):
 		question = Question.query.filter(Question.id == question_id).one_or_none()
 		if not question:
 			# If no question with given id was found, raise 404 
-			abort(404, {'message': 'Question with id {} does not exist.'.format(question_id)})
+			abort(400, {'message': 'Question with id {} does not exist.'.format(question_id)})
 		try:
 			question.delete()
 			return jsonify({
@@ -168,17 +168,18 @@ def create_app(test_config=None):
 	def search_questions():
 		body = request.get_json()
 		search_term = body.get('searchTerm', None)
+		try:
+			if search_term:
+				search_results = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
 
-		if search_term:
-			search_results = Question.query.filter(Question.question.ilike(f'%{search_term}%')).all()
-
-			return jsonify({
-				'success': True,
-				'questions': [question.format() for question in search_results],
-				'total_questions': len(search_results),
-				'current_category': None
-			})
-		abort(404)
+				return jsonify({
+					'success': True,
+					'questions': [question.format() for question in search_results],
+					'total_questions': len(search_results),
+					'current_category': None
+				})
+		except:	
+			abort(404)
 	'''
 	@TODO: 
 	Create a GET endpoint to get questions based on category. 
@@ -306,7 +307,7 @@ def create_app(test_config=None):
 		return jsonify({
 			"success": False, 
 			"error": 400,
-			"message": getErrorMessage(error, "bad request")
+			"message": "bad request"
 		}), 400
 
 	@app.errorhandler(404)
@@ -314,7 +315,7 @@ def create_app(test_config=None):
 		return jsonify({
 			"success": False, 
 			"error": 404,
-			"message": getErrorMessage(error, "resource not found")
+			"message": "resource not found"
 		}), 404
 
 	@app.errorhandler(405)
@@ -330,7 +331,7 @@ def create_app(test_config=None):
 		return jsonify({
 			"success": False, 
 			"error": 422,
-			"message": getErrorMessage(error, "unprocessable")
+			"message": "unprocessable"
 		}), 422
 	
 	@app.errorhandler(500)
